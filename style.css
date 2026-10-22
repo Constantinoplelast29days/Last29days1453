@@ -1,0 +1,409 @@
+:root {
+  --background: #171613;
+  --panel: #24211c;
+  --text: #eee5d5;
+  --muted: #b4a895;
+  --gold: #c5a46d;
+  --border: #514633;
+
+  /* Tezhipli çerçevenin üzerindeki karartma (0 = hiç karartma yok, 1 = tamamen siyah).
+     Çerçeveyi daha canlı görmek için değerleri düşür, daha sönük için artır. */
+  --frame-dim-top: 0.21;
+  --frame-dim-bottom: 0.315;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  background: var(--background);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Sabit arka plan: iPhone Safari "background-attachment: fixed" desteklemediği
+   için görsel ayrı bir katmana taşındı. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      rgba(15, 14, 12, var(--frame-dim-top)),
+      rgba(15, 14, 12, var(--frame-dim-bottom))
+    ),
+    url("assets/bground3.jpg") center / cover no-repeat,
+    var(--background);
+}
+
+.game-container {
+  width: 100%;
+  max-width: 900px;
+}
+
+.top-bar,
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  /* Çerçeve artık daha görünür olduğu için küçük yazılar koyu bir zemin üstünde durur */
+  padding: 8px 14px;
+  background: rgba(15, 14, 12, 0.78);
+  border: 1px solid rgba(197, 164, 109, 0.3);
+}
+
+.top-bar {
+  margin-bottom: 18px;
+  align-items: center;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.language-button {
+  padding: 6px 12px;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font: inherit;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.language-button:hover {
+  background: var(--gold);
+  color: #1b1915;
+}
+
+/* Her ekranda aynı boyutta kalır; en uzun ekrana (son ekran) göre ayarlı.
+   Küçük telefon ekranlarında üst çubuk ve alt bilgiyle birlikte sığması için
+   yüksekliği ekrana göre sınırlandırıldı. */
+.story-panel {
+  position: relative;
+  height: 640px;
+  height: min(640px, calc(100dvh - 190px));
+  min-height: 460px;
+  overflow-y: auto;
+  padding: clamp(28px, 7vw, 72px);
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  align-items: flex-start;
+  background:
+    linear-gradient(
+      rgba(15, 14, 12, 0.68),
+      rgba(15, 14, 12, 0.82)
+    ),
+    var(--scene-image, url("assets/background.jpg")) center / cover no-repeat;
+  border: 1px solid rgba(197, 164, 109, 0.45);
+}
+
+/* İçeriden çerçeveyi izleyen çok ince altın şerit */
+.story-panel::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(197, 164, 109, 0.18);
+  pointer-events: none;
+}
+
+.eyebrow {
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+h1 {
+  max-width: 680px;
+  margin: 16px 0;
+  font-size: clamp(36px, 7vw, 64px);
+  line-height: 1.08;
+  font-weight: normal;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+}
+
+h2 {
+  font-size: clamp(26px, 5vw, 40px);
+  line-height: 1.2;
+  font-weight: normal;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+}
+
+/* Ekran değişince JS başlığa odaklanır; odak çerçevesi gerekmez */
+h1:focus,
+h2:focus {
+  outline: none;
+}
+
+.intro,
+.story-text {
+  max-width: 620px;
+  color: #d1c5b3;
+  font-size: 18px;
+  line-height: 1.8;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.disclaimer {
+  max-width: 600px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.disclaimer-badge {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gold);
+  background: rgba(23, 22, 19, 0.85);
+  color: var(--gold);
+  cursor: help;
+  transition: background 0.2s, color 0.2s;
+}
+
+.disclaimer-badge:hover,
+.disclaimer-badge:focus-visible,
+.disclaimer-badge:focus-within {
+  background: var(--gold);
+  color: #1b1915;
+  outline: none;
+}
+
+/* Sürüm etiketi: her sahnede sağ üstte sabit durur */
+.version-badge {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  padding: 4px 8px;
+  border: 1px solid rgba(197, 164, 109, 0.5);
+  background: rgba(23, 22, 19, 0.85);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 1px;
+  pointer-events: none;
+}
+
+.disclaimer-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.disclaimer-popup {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: min(300px, calc(100vw - 32px));
+  padding: 12px 14px;
+  border: 1px solid var(--gold);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+  pointer-events: none;
+}
+
+/* focus-within: telefonda dokununca da açılır (focus-visible dokunuşta çalışmaz) */
+.disclaimer-badge:hover .disclaimer-popup,
+.disclaimer-badge:focus-visible .disclaimer-popup,
+.disclaimer-badge:focus-within .disclaimer-popup {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.primary-button,
+.choice-button,
+.secondary-button {
+  padding: 14px 20px;
+  border: 1px solid var(--gold);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.primary-button,
+.choice-button {
+  background: var(--gold);
+  color: #1b1915;
+}
+
+.primary-button {
+  margin-top: 22px;
+}
+
+.secondary-button {
+  background: transparent;
+  color: var(--text);
+}
+
+.primary-button:hover,
+.choice-button:hover {
+  background: #e0c18a;
+}
+
+.secondary-button:hover {
+  background: #393024;
+}
+
+/* Klavye ile gezenler için net odak çerçevesi */
+.primary-button:focus-visible,
+.choice-button:focus-visible,
+.secondary-button:focus-visible,
+.language-button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+.choices {
+  width: 100%;
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.choice-button {
+  width: 100%;
+  text-align: left;
+  line-height: 1.5;
+}
+
+/* Yan yana düğmeler (son ekrandaki "Kaynaklar" ve "Başa Dön") */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* "Daha fazla bilgi" kutusu */
+.info-box {
+  width: 100%;
+  max-width: 620px;
+  margin-top: 16px;
+  border: 1px solid rgba(197, 164, 109, 0.45);
+  background: rgba(23, 22, 19, 0.6);
+}
+
+.info-box summary {
+  padding: 10px 14px;
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+}
+
+.info-box summary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+.info-box-body {
+  padding: 0 14px 12px;
+}
+
+.info-box h3,
+.image-note-heading {
+  margin: 4px 0 6px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.info-box p {
+  margin: 0;
+  color: #d1c5b3;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* Kaynak ekranı */
+.source-list {
+  max-width: 620px;
+  padding-left: 22px;
+  color: #d1c5b3;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.source-list li + li {
+  margin-top: 8px;
+}
+
+.image-note-heading {
+  margin-top: 18px;
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+}
+
+.footer {
+  margin-top: 18px;
+  letter-spacing: 0.5px;
+}
+
+.footer.is-hidden,
+.disclaimer-badge.is-hidden {
+  visibility: hidden;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 14px;
+    padding-top: 66px;
+  }
+
+  .story-panel {
+    height: min(640px, calc(100dvh - 210px));
+  }
+
+  .story-panel::before {
+    inset: 6px;
+  }
+
+  .top-bar,
+  .footer {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .intro,
+  .story-text {
+    font-size: 17px;
+  }
+}
+
+/* Hareketten rahatsız olan kullanıcılar için geçişleri kapat */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

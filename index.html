@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>The Last 29 Days of Constantinople</title>
+  <meta name="description" content="A historical interactive story set in the final days of the 1453 siege of Constantinople.">
+  <meta name="theme-color" content="#171613">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="story.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="disclaimer-badge" id="disclaimer-badge" tabindex="0" aria-label="Disclaimer" aria-describedby="disclaimer-popup">
+    <span class="disclaimer-icon" aria-hidden="true">⚠</span>
+    <div class="disclaimer-popup" id="disclaimer-popup" role="tooltip">
+      Historical fiction. Your choices shape a character's
+      experience, not the historical outcome.
+    </div>
+  </div>
+
+  <span class="version-badge" id="version-badge" aria-label="Version"></span>
+
+  <main class="game-container">
+
+    <header class="top-bar">
+      <span class="project-label" id="project-label">A HISTORICAL INTERACTIVE STORY</span>
+      <div class="top-bar-right">
+        <span class="date-label" id="date-label">30 APRIL 1453</span>
+        <button id="language-button" class="language-button" type="button">
+          TÜRKÇE
+        </button>
+      </div>
+    </header>
+
+    <section id="game-screen" class="story-panel">
+
+      <p class="eyebrow">CONSTANTINOPLE · 1453</p>
+
+      <h1>The Last 29 Days<br>of Constantinople</h1>
+
+      <p class="intro">
+        A city stands at the edge of history.
+        Its walls remain, its people endure, and the
+        final days of the siege approach.
+      </p>
+
+      <button id="start-button" class="primary-button">
+        Begin the Story
+      </button>
+
+    </section>
+
+    <footer class="footer" id="footer">
+      <span id="footer-dates">30 April — 29 May 1453</span>
+      <span id="footer-tagline">History · Choice · Consequence</span>
+    </footer>
+
+  </main>
+</body>
+</html>
