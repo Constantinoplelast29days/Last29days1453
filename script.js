@@ -7,9 +7,10 @@ const languageButton = document.getElementById("language-button");
 const footer = document.getElementById("footer");
 const disclaimerBadge = document.getElementById("disclaimer-badge");
 const versionBadge = document.getElementById("version-badge");
+const sceneAnnouncer = document.getElementById("scene-announcer");
 
 // Sağ üstteki sürüm etiketi; her değişiklikte 0.0.1 artırılır
-const APP_VERSION = "0.0.3-alpha";
+const APP_VERSION = "0.0.5-alpha";
 
 // Oyun günleri: 1. gün 30 Nisan 1453
 const FIRST_DAY = Date.UTC(1453, 3, 30);
@@ -39,6 +40,84 @@ function findScene(id) {
   const scene = STORY.scenes.find((scene) => scene.id === id);
   if (!scene) throw new Error(`Sahne bulunamadı: "${id}"`);
   return scene;
+}
+
+// story.js'i kontrol eder; sorunları konsola uyarı olarak yazar, oyunu durdurmaz.
+// Yazım ekibi story.js'i düzenledikten sonra tarayıcı konsoluna bakabilir.
+function validateStory() {
+  const warn = (message) => console.warn(`[story.js] ${message}`);
+  const ids = new Set();
+
+  // { en, tr } metninin iki dilde de dolu olduğunu kontrol et
+  function checkText(text, where, allowEmpty = false) {
+    if (!text || typeof text !== "object") {
+      warn(`${where}: metin { en: "...", tr: "..." } biçiminde değil.`);
+      return;
+    }
+    for (const lang of ["en", "tr"]) {
+      const value = text[lang];
+      if (typeof value !== "string" || (!allowEmpty && !value.trim())) {
+        warn(`${where}: "${lang}" metni eksik.`);
+      }
+    }
+  }
+
+  // Arayüz metinleri: her anahtar iki dilde de olmalı
+  for (const [lang, other] of [["en", "tr"], ["tr", "en"]]) {
+    for (const key of Object.keys(translations[lang] || {})) {
+      if (!(key in (translations[other] || {}))) {
+        warn(`translations.${other} içinde "${key}" eksik.`);
+      }
+    }
+  }
+
+  STORY.scenes.forEach((scene, index) => {
+    if (!scene.id) {
+      warn(`${index + 1}. sahnenin id'si yok.`);
+    } else if (ids.has(scene.id)) {
+      warn(`"${scene.id}" id'si birden fazla sahnede kullanılmış.`);
+    }
+    ids.add(scene.id);
+  });
+
+  if (!ids.has(STORY.start)) {
+    warn(`STORY.start "${STORY.start}" adlı bir sahneyi gösteriyor ama böyle bir sahne yok.`);
+  }
+
+  STORY.scenes.forEach((scene, index) => {
+    const name = scene.id ? `"${scene.id}" sahnesi` : `${index + 1}. sahne`;
+
+    if (scene.eyebrow) checkText(scene.eyebrow, `${name}, eyebrow`);
+    checkText(scene.title, `${name}, title`);
+    (scene.paragraphs || []).forEach((text, i) =>
+      checkText(text, `${name}, ${i + 1}. paragraf`)
+    );
+    if (scene.note) checkText(scene.note, `${name}, note`);
+    if (scene.infoBox) {
+      checkText(scene.infoBox.title, `${name}, infoBox.title`);
+      checkText(scene.infoBox.text, `${name}, infoBox.text`);
+    }
+
+    (scene.choices || []).forEach((choice, i) => {
+      checkText(choice.text, `${name}, ${i + 1}. düğme`);
+      if (!ids.has(choice.next)) {
+        warn(`${name}, ${i + 1}. düğme: "next" değeri "${choice.next}" ama böyle bir sahne yok.`);
+      }
+    });
+
+    if (scene.image) {
+      if (!scene.image.startsWith("assets/")) {
+        warn(`${name}: görsel assets/ ile başlamıyor: ${scene.image}`);
+      }
+      // Dosya adı yanlışsa resim yüklenemez
+      const image = new Image();
+      image.onerror = () => warn(`${name}: görsel bulunamadı: ${scene.image}`);
+      image.src = scene.image;
+    }
+  });
+
+  STORY.sources.forEach((source, i) => checkText(source, `${i + 1}. kaynak`));
+  checkText(STORY.imageNote, "imageNote", true);
 }
 
 // Oyuncunun bulunduğu günü sağ üstteki tarih etiketine yaz
@@ -135,9 +214,6 @@ function render(sceneId, moveFocus = false) {
 
   // Sahneye özel resim yoksa style.css'teki varsayılan kullanılır
   if (scene.image) {
-    if (!scene.image.startsWith("assets/")) {
-      console.warn(`"${scene.id}" sahnesinin görseli assets/ altında değil: ${scene.image}`);
-    }
     gameScreen.style.setProperty("--scene-image", `url("${scene.image}")`);
   } else {
     gameScreen.style.removeProperty("--scene-image");
@@ -174,6 +250,13 @@ function render(sceneId, moveFocus = false) {
   }
 }
 
+// Odak taşınmadan yeniden çizilen sahnenin (ör. dil değişimi) başlığını
+// ekran okuyucuya duyur. Odak taşındığında başlık zaten okunduğu için
+// burada tekrar duyurulmaz.
+function announceHeading() {
+  sceneAnnouncer.textContent = gameScreen.querySelector("h1, h2").textContent;
+}
+
 // Ekran dışındaki sabit metinleri güncelle
 function applyStaticTexts() {
   document.documentElement.lang = language;
@@ -184,7 +267,6 @@ function applyStaticTexts() {
   languageButton.textContent = t("languageButton");
 
   versionBadge.textContent = `v${APP_VERSION}`;
-  versionBadge.setAttribute("aria-label", `${t("versionLabel")} ${APP_VERSION}`);
 
   disclaimerBadge.setAttribute("aria-label", t("disclaimerLabel"));
   document.getElementById("disclaimer-popup").textContent = t("disclaimerText").trim();
@@ -197,7 +279,15 @@ languageButton.addEventListener("click", () => {
   } catch (error) {}
   applyStaticTexts();
   render(currentSceneId);
+  announceHeading();
 });
+
+// Doğrulayıcıdaki bir hata oyunu durdurmasın
+try {
+  validateStory();
+} catch (error) {
+  console.warn("[story.js] Doğrulama tamamlanamadı:", error);
+}
 
 applyStaticTexts();
 render(STORY.start);

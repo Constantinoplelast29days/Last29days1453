@@ -114,7 +114,7 @@ Resim metin kutucuğunun arka planı olur. Yazılar okunabilsin diye üstünde y
 
 - Satırı hiç yazmazsan kutucukta varsayılan resim (`assets/background.jpg`) kalır.
 - Yol mutlaka `assets/` ile başlamalı. Dosya adında büyük-küçük harf de önemli: `Surlar.jpg` ile `surlar.jpg` farklı dosyalardır.
-- Büyük resimler oyunun yavaş açılmasına yol açar; yaklaşık 2 MB'ın altında tutmaya çalış.
+- Büyük resimler oyunun yavaş açılmasına yol açar; 500 KB'ın altında tutmaya çalış.
 
 ## Bilgi kutusu eklemek
 
@@ -187,7 +187,25 @@ Birden fazla sahnede aynı metin geçiyorsa onu tekrar yazma. Bu tür metinler d
 - **`next` içinde yanlış ad yazmak.** `next` değeri bir sahnenin `id`'siyle harfi harfine aynı olmalı. Yanlışsa düğmeye basınca hiçbir şey olmaz.
 - **Kesme işareti.** Metni `"` ile başlattıysan içinde `'` kullanabilirsin: `"Konstantinopolis'in"`. Birkaç satırlık metinlerde `` ` `` (ters tırnak) kullanmak en rahatıdır.
 - **Başlıkta satır atlamak** için `<br>` yaz: `"Birinci satır<br>İkinci satır"`.
+- Metinler sayfaya HTML olarak yazıldığı için metin içinde `<` ve `&` işaretlerini kullanma (yalnızca satır atlamak için `<br>`). Ters tırnakla yazılan metinlerin içinde `${` yazma.
 
 ## Kontrol
 
 Değişiklikten sonra `index.html`'i tarayıcıda aç ve yeni sahneye kadar oyna. Dil düğmesine basıp iki dilde de kontrol et. Ekran boş kalırsa büyük ihtimalle bir virgül ya da tırnak eksiktir.
+
+## Konsolda uyarı görürsen ne yapmalı
+
+Oyun açılırken `story.js`'i kendiliğinden kontrol eder ve bulduğu sorunları tarayıcı konsoluna sarı uyarı olarak yazar. Uyarılar oyunu durdurmaz, ama düzeltilmeleri gerekir.
+
+Konsolu açmak için: Chrome'da Mac'te `Cmd + Option + J`, Windows'ta `F12` ya da `Ctrl + Shift + J`. Safari'de önce Ayarlar → Gelişmiş → "Geliştirici menüsünü göster" seçeneğini aç, sonra `Cmd + Option + C`.
+
+Her uyarı `[story.js]` ile başlar ve hangi sahnede, hangi alanda sorun olduğunu söyler:
+
+- **"id'si birden fazla sahnede kullanılmış"**: İki sahneye aynı `id`'yi vermişsin. Birinin adını değiştir; o sahneye giden `next` değerlerini de güncelle.
+- **"next değeri ... ama böyle bir sahne yok"**: Düğmenin `next` değeri hiçbir sahnenin `id`'siyle eşleşmiyor. Yazımı kontrol et (büyük/küçük harf, tire).
+- **"en metni eksik" / "tr metni eksik"**: O metnin bir dili boş ya da hiç yazılmamış. Her metin iki dilde de olmalı.
+- **"metin { en: ..., tr: ... } biçiminde değil"**: Metni düz yazmışsın (`title: "..."`). `title: { en: "...", tr: "..." }` biçiminde yaz.
+- **"görsel assets/ ile başlamıyor"**: Görsel yolu `assets/` ile başlamalı: `image: "assets/gun2.jpg"`.
+- **"görsel bulunamadı"**: Dosya adı yanlış ya da dosya `assets/` klasöründe değil. Dosya adını, uzantısını (`.jpg` / `.png`) ve büyük/küçük harfleri kontrol et.
+
+Düzelttikten sonra sayfayı yenile; uyarı kaybolmalı. Konsolda kırmızı bir hata varsa ve ekran boşsa sorun büyük ihtimalle bir virgül ya da tırnaktır (bkz. "Sık yapılan hatalar").

@@ -14,6 +14,10 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://constantinoplelast29days.github.io/Last29days1453/">
   <meta property="og:image" content="https://constantinoplelast29days.github.io/Last29days1453/assets/og-image.jpg">
+  <meta property="og:image:alt" content="Ottoman miniature-style illustration of the siege of Constantinople">
+  <meta property="og:site_name" content="The Last 29 Days of Constantinople">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="tr_TR">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -32,7 +36,10 @@
     </div>
   </div>
 
-  <span class="version-badge" id="version-badge" aria-label="Version"></span>
+  <span class="version-badge" id="version-badge"></span>
+
+  <!-- Ekran okuyucu için sahne başlığı duyurusu (görünmez) -->
+  <p class="visually-hidden" id="scene-announcer" aria-live="polite"></p>
 
   <main class="game-container">
 
@@ -61,6 +68,13 @@
       <button id="start-button" class="primary-button">
         Begin the Story
       </button>
+
+      <noscript>
+        <p class="disclaimer">
+          This story requires JavaScript.<br>
+          Bu hikâye için JavaScript gerekir.
+        </p>
+      </noscript>
 
     </section>
 
