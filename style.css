@@ -413,6 +413,17 @@ h2:focus {
     height: auto;
     min-height: calc(100dvh - 210px);
     overflow: visible;
+    padding-inline: 22px;
+  }
+
+  /* Uzun kelimeler ("Konstantinopolis'in") dar ekranda sayfayı yatayda taşırmasın */
+  h1 {
+    font-size: clamp(26px, 7.2vw, 64px);
+  }
+
+  h1,
+  h2 {
+    overflow-wrap: anywhere;
   }
 
   .story-panel::before {

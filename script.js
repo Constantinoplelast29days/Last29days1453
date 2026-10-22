@@ -10,7 +10,7 @@ const versionBadge = document.getElementById("version-badge");
 const sceneAnnouncer = document.getElementById("scene-announcer");
 
 // Sağ üstteki sürüm etiketi; her değişiklikte 0.0.1 artırılır
-const APP_VERSION = "0.0.5-alpha";
+const APP_VERSION = "0.0.6-alpha";
 
 // Oyun günleri: 1. gün 30 Nisan 1453
 const FIRST_DAY = Date.UTC(1453, 3, 30);
