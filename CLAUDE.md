@@ -4,8 +4,9 @@ Tarihî interaktif hikâye, saf HTML/CSS/JS, tarayıcıda çalışır, derleme y
 ## Kurallar
 - Hikâye metinlerini, seçimleri ve tarihî içeriği KENDİ BAŞINA değiştirme.
   Bunlar araştırma ve yazım ekibinin işidir. Yazım hatası görürsen düzeltme, bana sor.
-- Her yeni metin hem "en" hem "tr" altına eklenmeli (script.js içindeki translations).
+- Her yeni metin hem "en" hem "tr" altına eklenmeli. Metinler ve sahneler story.js içinde
+  (translations ve STORY); script.js yalnızca motor.
 - Tarihî kişilere belgelenmemiş sözler atfetme.
 - Görseller assets/ klasöründe, her biri 500 KB altında olmalı.
 - Mobilde çalışmalı, klavyeyle kullanılabilir olmalı.
-- Değişiklikten önce ne yapacağını kısaca açıkla, sonra yap.s
+- Değişiklikten önce ne yapacağını kısaca açıkla, sonra yap.

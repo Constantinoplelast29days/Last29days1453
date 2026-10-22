@@ -9,7 +9,7 @@ const disclaimerBadge = document.getElementById("disclaimer-badge");
 const versionBadge = document.getElementById("version-badge");
 
 // Sağ üstteki sürüm etiketi; her değişiklikte 0.0.1 artırılır
-const APP_VERSION = "0.0.2-alpha";
+const APP_VERSION = "0.0.3-alpha";
 
 // Oyun günleri: 1. gün 30 Nisan 1453
 const FIRST_DAY = Date.UTC(1453, 3, 30);
