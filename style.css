@@ -6,6 +6,10 @@
   --gold: #c5a46d;
   --border: #514633;
 
+  /* Taraf renkleri: koyu zeminde okunur, birbirinden ve altından ayırt edilir */
+  --ottoman: #d9776a;
+  --byzantine: #a98fd0;
+
   /* Tezhipli çerçevenin üzerindeki karartma (0 = hiç karartma yok, 1 = tamamen siyah).
      Çerçeveyi daha canlı görmek için değerleri düşür, daha sönük için artır. */
   --frame-dim-top: 0.21;
@@ -139,10 +143,69 @@ body::before {
   pointer-events: none;
 }
 
+/* Taraf şeridi: panelin sol kenarında ince renkli çizgi */
+.story-panel[data-side="ottoman"] {
+  box-shadow: inset 4px 0 0 var(--ottoman);
+}
+
+.story-panel[data-side="byzantine"] {
+  box-shadow: inset 4px 0 0 var(--byzantine);
+}
+
+/* Taraf etiketi (Osmanlı / Bizans) */
+.side-label {
+  margin: 0 0 4px;
+  padding-left: 10px;
+  border-left: 3px solid currentColor;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.story-panel[data-side="ottoman"] .side-label {
+  color: var(--ottoman);
+}
+
+.story-panel[data-side="byzantine"] .side-label {
+  color: var(--byzantine);
+}
+
 .eyebrow {
   color: var(--gold);
   font-size: 12px;
   letter-spacing: 3px;
+}
+
+/* Başlığı olmayan ekranlarda (sonuç, son) eyebrow başlık olarak kullanılır */
+h2.eyebrow {
+  margin: 12px 0 4px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Seçilen seçenek ve sabah raporları */
+.quote {
+  max-width: 620px;
+  margin: 16px 0 4px;
+  padding: 4px 0 4px 16px;
+  border-left: 2px solid var(--gold);
+}
+
+.quote p {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.7;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.quote footer {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
 h1 {
@@ -357,7 +420,8 @@ h2:focus {
 }
 
 .info-box h3,
-.image-note-heading {
+.image-note-heading,
+.note-heading {
   margin: 4px 0 6px;
   color: var(--text);
   font-size: 16px;
@@ -384,7 +448,8 @@ h2:focus {
   margin-top: 8px;
 }
 
-.image-note-heading {
+.image-note-heading,
+.note-heading {
   margin-top: 18px;
   color: var(--gold);
   font-size: 13px;
