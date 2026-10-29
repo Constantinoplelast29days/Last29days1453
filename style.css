@@ -95,18 +95,12 @@ body::before {
   color: #1b1915;
 }
 
-/* Her ekranda aynı boyutta kalır; en uzun ekrana (son ekran) göre ayarlı.
-   Küçük telefon ekranlarında üst çubuk ve alt bilgiyle birlikte sığması için
-   yüksekliği ekrana göre sınırlandırıldı. */
+/* Kısa sahnelerde en az bu yükseklikte durur; içerik uzarsa panel uzar ve
+   yalnızca sayfa kayar (panelin içinde kaydırma yok). */
 .story-panel {
   position: relative;
-  height: 640px;
-  height: min(640px, calc(100dvh - 190px));
-  min-height: 460px;
-  overflow-y: auto;
-  /* İnce, altın rengi kaydırma çubuğu (beyaz varsayılan çubuk görünmesin) */
-  scrollbar-width: thin;
-  scrollbar-color: var(--gold) transparent;
+  min-height: 640px;
+  min-height: min(640px, calc(100dvh - 190px));
   padding: clamp(28px, 7vw, 72px);
   display: flex;
   flex-direction: column;
@@ -117,24 +111,18 @@ body::before {
       rgba(15, 14, 12, 0.68),
       rgba(15, 14, 12, 0.82)
     ),
-    var(--scene-image, url("assets/background.jpg")) center / cover no-repeat;
+    var(--scene-image, url("assets/background.jpg"))
+      var(--scene-image-position, center) / cover no-repeat;
   border: 1px solid rgba(197, 164, 109, 0.45);
 }
 
+/* Düz zemin (plainBackground: true, ör. Kaynaklar): görsel yerine koyu renk.
+   Çerçeve, taraf şeridi ve iç çizgi aynı kalır. */
+.story-panel.plain-bg {
+  background: linear-gradient(rgba(28, 26, 22, 0.95), rgba(28, 26, 22, 0.95));
+}
+
 /* İçeriden çerçeveyi izleyen çok ince altın şerit */
-.story-panel::-webkit-scrollbar {
-  width: 6px;
-}
-
-.story-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.story-panel::-webkit-scrollbar-thumb {
-  background: var(--gold);
-  border-radius: 3px;
-}
-
 .story-panel::before {
   content: "";
   position: absolute;
@@ -208,6 +196,37 @@ h2.eyebrow {
   letter-spacing: 0.5px;
 }
 
+/* Sabah raporunun isteğe bağlı künye satırı (kaynak adının altında) */
+.quote .report-cite {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+  opacity: 0.75;
+}
+
+/* Sonuç ve onay ekranında alıntının üstündeki "Seçimin" etiketi:
+   eyebrow'dan daha küçük ve soluk */
+.choice-label {
+  margin: 16px 0 0;
+  color: #d1c5b3;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  opacity: 0.8;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.choice-label + .quote {
+  margin-top: 6px;
+}
+
+/* Test modunda seçeneklerin başındaki [A]/[B] rozeti */
+.choice-letter {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  opacity: 0.55;
+}
+
 h1 {
   max-width: 680px;
   margin: 16px 0;
@@ -242,9 +261,9 @@ h2:focus {
 .disclaimer {
   max-width: 600px;
   margin-top: 12px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.6;
+  color: #d1c5b3;
+  font-size: 15px;
+  line-height: 1.7;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
@@ -393,6 +412,16 @@ h2:focus {
   gap: 12px;
 }
 
+/* Açılıştaki ana düğme + ikincil düğme satırı */
+.actions-mixed {
+  margin-top: 22px;
+  align-items: center;
+}
+
+.actions-mixed .primary-button {
+  margin-top: 0;
+}
+
 /* "Daha fazla bilgi" kutusu */
 .info-box {
   width: 100%;
@@ -436,16 +465,46 @@ h2:focus {
 }
 
 /* Kaynak ekranı */
+/* Kaynakça grubu başlığı: "Tarihte ne oldu" etiketiyle aynı aile */
+.source-group {
+  margin: 22px 0 0;
+  color: var(--gold);
+  font-size: 15px;
+  font-weight: normal;
+  letter-spacing: 1.5px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Künyeler: madde işareti ve numara yok, asılı girinti */
 .source-list {
   max-width: 620px;
-  padding-left: 22px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
   color: #d1c5b3;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.source-list li {
+  padding-left: 16px;
+  text-indent: -16px;
 }
 
 .source-list li + li {
-  margin-top: 8px;
+  margin-top: 4px;
+}
+
+/* Kaynak listesinin altındaki küçük, soluk not */
+.sources-note {
+  max-width: 620px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 .image-note-heading,
@@ -456,13 +515,21 @@ h2:focus {
   letter-spacing: 1.5px;
 }
 
+/* "Tarihte ne oldu" / "Tarihte yaşanan:" etiketi altındaki notla (15px) aynı boyutta;
+   Kaynaklar'daki "Görsel notu" başlığı da aynı boyutta */
+.note-heading,
+.image-note-heading {
+  font-size: 15px;
+}
+
 .footer {
   margin-top: 18px;
   letter-spacing: 0.5px;
 }
 
 .footer.is-hidden,
-.disclaimer-badge.is-hidden {
+.disclaimer-badge.is-hidden,
+.date-label.is-hidden {
   visibility: hidden;
 }
 
@@ -472,12 +539,8 @@ h2:focus {
     padding-top: 66px;
   }
 
-  /* Telefonda sabit yükseklik yok: panel içerik kadar uzar, böylece iç içe
-     iki kaydırma yerine yalnızca sayfa kayar. */
   .story-panel {
-    height: auto;
     min-height: calc(100dvh - 210px);
-    overflow: visible;
     padding-inline: 22px;
   }
 
@@ -529,6 +592,37 @@ h2:focus {
     font-size: 16px;
     line-height: 1.65;
   }
+}
+
+/* Test modu (?test): sol altta sahne etiketi. Sayfanın son düğmeleri
+   etiketin altında kalmasın diye sayfaya alttan boşluk verilir. */
+body.test-mode {
+  padding-bottom: 48px;
+}
+
+.test-label {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 10;
+  max-width: calc(100vw - 16px);
+  padding: 4px 8px;
+  border: 1px solid rgba(197, 164, 109, 0.6);
+  background: rgba(15, 14, 12, 0.85);
+  color: var(--text);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  user-select: none;
+}
+
+.test-label:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 
 /* Ekranda görünmez, ekran okuyucu okur */
